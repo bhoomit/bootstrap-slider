@@ -46,8 +46,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		}
 	} else if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && module.exports) {
 		var jQuery;
+		var jsdom = require("jsdom");
 		try {
-			jQuery = require("jquery");
+			jQuery = require("jquery")(jsdom.jsdom().createWindow());
 		} catch (err) {
 			jQuery = null;
 		}
