@@ -3,7 +3,7 @@
 ========================================================= */
 "use strict";
 
-function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 /*! =========================================================
  * bootstrap-slider.js
@@ -298,7 +298,7 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
 		/*************************************************
   						CONSTRUCTOR
   	**************************************************/
-		Slider = function (element, options) {
+		Slider = function Slider(element, options) {
 			createNewSlider.call(this, element, options);
 			return this;
 		};
@@ -1579,20 +1579,20 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
 				if (this.options.orientation === 'vertical') {
 					var tooltipPos = this.options.tooltip_position || 'right';
 					var oppositeSide = tooltipPos === 'left' ? 'right' : 'left';
-					tooltips.forEach((function (tooltip) {
+					tooltips.forEach(function (tooltip) {
 						this._addClass(tooltip, tooltipPos);
 						tooltip.style[oppositeSide] = '100%';
-					}).bind(this));
+					}.bind(this));
 				} else if (this.options.tooltip_position === 'bottom') {
-					tooltips.forEach((function (tooltip) {
+					tooltips.forEach(function (tooltip) {
 						this._addClass(tooltip, 'bottom');
 						tooltip.style.top = 22 + 'px';
-					}).bind(this));
+					}.bind(this));
 				} else {
-					tooltips.forEach((function (tooltip) {
+					tooltips.forEach(function (tooltip) {
 						this._addClass(tooltip, 'top');
 						tooltip.style.top = -this.tooltip.outerHeight - 14 + 'px';
-					}).bind(this));
+					}.bind(this));
 				}
 			}
 		};
@@ -1601,6 +1601,9 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
   		Attach to global namespace
   	*********************************/
 		if ($) {
+			if (!$.fn) {
+				$.fn = {};
+			}
 			var namespace = $.fn.slider ? 'bootstrapSlider' : 'slider';
 			$.bridget(namespace, Slider);
 

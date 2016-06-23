@@ -1643,6 +1643,9 @@
 
 		*********************************/
 		if($) {
+			if(!$.fn) {
+				$.fn = {};
+			}
 			var namespace = $.fn.slider ? 'bootstrapSlider' : 'slider';
 			$.bridget(namespace, Slider);
 
