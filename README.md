@@ -14,10 +14,6 @@ Want to use npm? `npm install bootstrap-slider`
 
 Want to get it from a CDN? https://cdnjs.com/libraries/bootstrap-slider
 
-__NOTE for NPM users__: In order to keep the version numbers in our dist/ file consistent with our Github tags, we do a patch version bump, generate a new dist, and create a commit/tag on postpublish.
-
-This does mean the Github repo will always be one patch commit off of what is published to NPM. Note that this will not affect functionality, and is only used to keep package management system files and the dist file version numbers in sync.
-
 Basic Setup
 ============
 Load the plugin CSS and JavaScript into your web page, and everything should work!
@@ -39,6 +35,7 @@ You can see all of our API examples [here](http://seiyria.github.io/bootstrap-sl
 Using bootstrap-slider (with JQuery)
 ======================
 
+### Using `.slider` namespace
 Create an input element and call .slider() on it:
 
 ```js
@@ -52,6 +49,22 @@ var value = mySlider.slider('getValue');
 	mySlider
 		.slider('setValue', 5)
 		.slider('setValue', 7);
+```
+
+### Using `.bootstrapSlider` namespace
+Create an input element and call .bootstrapSlider() on it:
+
+```js
+// Instantiate a slider
+var mySlider = $("input.slider").bootstrapSlider();
+
+// Call a method on the slider
+var value = mySlider.bootstrapSlider('getValue');
+
+// For non-getter methods, you can chain together commands
+	mySlider
+		.bootstrapSlider('setValue', 5)
+		.bootstrapSlider('setValue', 7);
 ```
 
 Using bootstrap-slider (via `data-provide`-API)
@@ -78,7 +91,7 @@ turns it into a slider. Options can be supplied via `data-slider-` attributes.
 What if there is already a _slider_ plugin bound to the JQuery namespace?
 ======================
 
-If there is already a JQuery plugin named _slider_ bound to the JQuery namespace, then this plugin will take on the alternate namespace _bootstrapSlider_.
+If there is already a JQuery plugin named _slider_ bound to the JQuery namespace, then this plugin will emit a console warning telling you this namespace has already been taken and will encourage you to use the alternate namespace _bootstrapSlider_ instead.
 
 ```js
 // Instantiate a slider
@@ -123,13 +136,34 @@ var Slider = require("bootstrap-slider");
 var mySlider = new Slider();
 ```
 
-Note that the JQuery dependency is considered to be optional. For example, to exclude JQuery from being part of your Browserify build, you would call something like the following (assuming main.js is requiring bootstrap-slider as a dependency):
+How do I exclude the optional JQuery dependency from my build?
+=======
+### Browserify
+__Note that the JQuery dependency is considered to be optional.__ For example, to exclude JQuery from being part of your Browserify build, you would call something like the following (assuming `main.js` is requiring bootstrap-slider as a dependency):
 
-```
+```BASH
 browserify -u jquery main.js > bundle.js
 ```
+### Webpack
+To exclude JQuery from your Webpack build, you will have to go into the Webpack config file for your specific project and add something like the following to your `resolve.alias` section:
 
-Please see the documentation for the specific CommonJS loader you are using to find out how to exclude dependencies.
+```js
+resolve: {
+    alias: {
+         "jquery": path.join(__dirname, "./jquery-stub.js");
+    }
+}
+```
+
+Then in your project, you will have to create a stub module for jquery that exports a `null` value. Whenever `require("jquery")` is mentioned in your project, it will load this stubbed module.
+
+```js
+// Path: ./jquery-stub.js
+module.exports = null;
+```
+
+### Other
+Please see the documentation for the specific module loader you are using to find out how to exclude dependencies.
 
 Options
 =======
@@ -226,13 +260,18 @@ The following is a list of the commonly-used command line tasks:
 
 Version Bumping and Publishing (Maintainers Only)
 =======
-To bump the version number across all the various packagement systems the plugin is registered with, please use the [grunt bump](https://github.com/vojtajina/grunt-bump) plugin.
+To do the following release tasks:
+* bump the version
+* publish a new version to NPM
+* update the `gh-pages` branch
+* push a new `dist` bundle to the `master` branch on the remote `origin`
+* push new tags to the remote `origin`
 
-* _grunt bump:patch_ - patch version bump, __0.0.0 -> 0.0.1__
-* _grunt bump:minor_ - minor version bump, __0.0.0 -> 0.1.0__
-* _grunt bump:major_ - major version bump, __0.0.0 -> 1.0.0__
+Type the following command:
 
-After bumping, type `npm publish` to update on NPM.
+`npm run release <patch|minor|major>`
+
+If you do not specify a version bump type, the script will automatically defer to a patch bump.
 
 
 Other Platforms & Libraries
